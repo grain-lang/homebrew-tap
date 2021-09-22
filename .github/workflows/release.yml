@@ -1,0 +1,47 @@
+name: Grain Release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The tag of release"
+        required: true
+
+jobs:
+  release-updates:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+
+      - name: Set version
+        run: |
+          echo "GRAIN_VERSION=$(echo '${{ github.event.inputs.tag }}' | sed -E 's|grain-v||g')" >> $GITHUB_ENV
+
+      - name: Set tap path
+        run: |
+          echo "GRAIN_TAP_PATH=$(brew tap-info ${{ github.repository }} --json | jq -r '.[0].path')" >> $GITHUB_ENV
+
+      - name: Check env
+        run: |
+          echo "${{ env.GRAIN_VERSION }}"
+          echo "${{ env.GRAIN_TAP_PATH }}"
+
+      # We can't use the checkout action to clone outside of the GITHUB_WORKSPACE, so we symlink it
+      # https://github.com/actions/checkout/issues/197
+      - name: Symlink tap
+        run: |
+          mkdir -p $(dirname ${{ env.GRAIN_TAP_PATH }})
+          ln -s $(pwd) ${{ env.GRAIN_TAP_PATH }}
+
+      - name: Configure git
+        run: |
+          git config user.name grainbot[bot]
+          git config user.email bot@grain-lang.org
+
+      - name: Update tap
+        run: |
+          brew bump-cask-pr --version ${{ env.GRAIN_VERSION }} --write --commit grain
+
+      - name: Push updates
+        run: |
+          git push
