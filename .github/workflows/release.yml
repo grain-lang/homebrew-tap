@@ -40,7 +40,7 @@ jobs:
 
       - name: Update tap
         run: |
-          brew bump-cask-pr --version ${{ env.GRAIN_VERSION }} --write --commit grain
+          brew bump-cask-pr --version ${{ env.GRAIN_VERSION }} --write-only --commit grain
 
       - name: Push updates
         run: |
