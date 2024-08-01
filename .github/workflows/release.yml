@@ -13,6 +13,10 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v2
 
+      - name: Set GitHub token
+        run: |
+          echo "HOMEBREW_GITHUB_API_TOKEN=${{ secrets.WORKFLOW_TOKEN }}" >> $GITHUB_ENV
+          
       - name: Set version
         run: |
           echo "GRAIN_VERSION=$(echo '${{ github.event.inputs.tag }}' | sed -E 's|grain-v||g')" >> $GITHUB_ENV
