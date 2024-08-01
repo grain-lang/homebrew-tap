@@ -6,16 +6,15 @@ on:
         description: "The tag of release"
         required: true
 
+env:
+  HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   release-updates:
     runs-on: macos-latest
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
-
-      - name: Set GitHub token
-        run: |
-          echo "HOMEBREW_GITHUB_API_TOKEN=${{ secrets.WORKFLOW_TOKEN }}" >> $GITHUB_ENV
           
       - name: Set version
         run: |
