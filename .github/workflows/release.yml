@@ -39,6 +39,8 @@ jobs:
           git config user.email bot@grain-lang.org
 
       - name: Update tap
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           brew bump-cask-pr --version ${{ env.GRAIN_VERSION }} --write-only --commit grain
 
