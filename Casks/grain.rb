@@ -8,4 +8,8 @@ cask "grain" do
   homepage "https://grain-lang.org/"
 
   binary "grain-mac-x64", target: "grain"
+
+  caveats do
+    requires_rosetta
+  end
 end
